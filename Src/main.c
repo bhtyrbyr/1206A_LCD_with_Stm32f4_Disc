@@ -5,6 +5,9 @@
 	Bu proje kasnagindan haric herhangi farkli bir kod kasnagi olusturanlar bu durumun tüm ayrintilarini mutlaka anlatmaktan sorumludur.
 */
 
+#define LINE_ONE	"   1206A  LCD   "
+#define LINE_TWO	"  Stm32f4 Disc  "
+
 static void LED_GPIO_Init(void);
 
 int main(void)
@@ -15,21 +18,26 @@ int main(void)
   while((Display_Pin_Init() != HAL_OK))
 	{	}
 	LCD_InitStruct LCD_Init;	
-	LCD_Init.Display_Funtion_Set.Data_Length 							= BIT_4;
-	LCD_Init.Display_Funtion_Set.Row_Count		 						= ROW_2;
-	LCD_Init.Display_Funtion_Set.Font_Size	 							= HIGH_QUALITY;
+	LCD_Init.Display_Funtion_Set.Data_Length 							= FOUR_BIT;
+	LCD_Init.Display_Funtion_Set.Row_Count		 						= TWO_ROW;
+	LCD_Init.Display_Funtion_Set.Font_Quality	 						= HIGH_QUALITY;
 	LCD_Init.Display_Control.Display 											= DSP_ON;
-	LCD_Init.Display_Control.Cursor												= CRS_ON;
+	LCD_Init.Display_Control.Cursor												= CRS_OFF;
 	LCD_Init.Display_Control.Cursor_Blink 								= CRS_BLNK_OFF;
 	LCD_Init.Display_Entry_Mode.Inc_Dec_State							= INCREMENT;
-	LCD_Init.Display_Entry_Mode.Shift_of_Entire_Dsp_State = HIGH;
+	LCD_Init.Display_Entry_Mode.Shift_of_Entire_Dsp_State = LOW;
 	Display_Init(LCD_Init);
-	//LCD_Set_Cursor(1, 1);
-	LCD_Communication(0x44, CMMON_WRITE_DATA);
+	
+	LCD_Set_Cursor(1, 0);      
+	LCD_Write_String((int8_t *) LINE_ONE);
+	LCD_Set_Cursor(2, 0);
+	LCD_Write_String((int8_t *) LINE_TWO);
+	HAL_Delay(2000);
+	
   while (1)
   {
+		HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 #ifdef _TEST_MODE
-		//Test_Function();
 #endif /* _TEST_MODE */
   }
 }

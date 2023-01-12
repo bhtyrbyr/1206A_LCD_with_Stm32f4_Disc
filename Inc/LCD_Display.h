@@ -11,7 +11,7 @@
 	*		|---------------------------------------------------|
 	*		|		VSS 	->			GND			|		D2  	-> 		-NC-			|
 	*		|		VDD 	->			5V			|		D3  	-> 		-NC-			|
-	*		|		V0  	->		GND&E14		|		D4  	-> 		E7				|
+	*		|		V0  	->		GND&E14		|		D4  	-> 		E7				|,
 	*		|		RS  	->			E8			|		D5  	-> 		E9				|
 	*		|		WR  	->			E10			|		D6  	-> 		E11				|
 	*		|		EN  	->			E12			|		D7  	-> 		E13				|
@@ -34,7 +34,7 @@ extern "C" {
 /* DEFINE MACRO BEGIN --------------------------------------------------*/
 
 // Display Command -------------------------------------------------------
-#define		LCD_RTRN_HOME						0x03
+#define		LCD_CMD_RTRN_HOME				0x03
 #define		LCD_CMD_CLEAR						0x01
 
 // Port Select -----------------------------------------------------------
@@ -52,8 +52,8 @@ extern "C" {
 #define 	LCD_PIN_D5							GPIO_PIN_9
 #define 	LCD_PIN_D6							GPIO_PIN_11
 #define 	LCD_PIN_D7							GPIO_PIN_13
-#define 	LCD_DISPLAY_DTA_PINS		PIN_D4 | PIN_D5 | PIN_D6 | PIN_D7
-#define 	__LCD_ALL_DTA_PIN_RST		HAL_GPIO_WritePin(LED_PORT, LCD_DISPLAY_DTA_PINS, GPIO_PIN_RESET)
+#define 	LCD_DISPLAY_DTA_PINS		LCD_PIN_D4 | LCD_PIN_D5 | LCD_PIN_D6 | LCD_PIN_D7
+#define 	__LCD_ALL_DTA_PIN_RST		HAL_GPIO_WritePin(LCD_PORT, LCD_DISPLAY_DTA_PINS, GPIO_PIN_RESET)
 
 #define		LCD_ALL_PINS						LCD_PIN_RS | LCD_PIN_WR | LCD_PIN_EN | LCD_PIN_KN | LCD_PIN_D4 | LCD_PIN_D5 | LCD_PIN_D6 | LCD_PIN_D7
 
@@ -79,24 +79,24 @@ typedef enum{
 }CMMON_State;				
 				
 typedef enum{				
-	BIT_4													= 0x00,
-	BIT_8													= 0x10
+	FOUR_BIT											= 0x00,
+	EIGHT_BIT											= 0x10
 }Commun_Data_Length;				
 				
 typedef enum{				
-	ROW_1													= 0x00,
-	ROW_2													= 0x08
+	ONE_ROW												= 0x00,
+	TWO_ROW												= 0x08
 }Display_Row_Count;				
 				
 typedef enum{				
 	LOW_QUALITY										= 0x00,
 	HIGH_QUALITY									= 0x04
-}Font_Size;				
+}Font_Quality;				
 				
 typedef struct{				
 	Commun_Data_Length						Data_Length;
 	Display_Row_Count							Row_Count;
-	Font_Size											Font_Size;
+	Font_Quality									Font_Quality;
 }Function_Set;				
 				
 typedef enum{				
@@ -149,8 +149,9 @@ typedef struct{
 HAL_StatusTypeDef Display_Pin_Init(void);
 HAL_StatusTypeDef Display_Init(LCD_InitStruct InitStruct);
 HAL_StatusTypeDef LCD_Set_Cursor(uint8_t Row, uint8_t Column);
+HAL_StatusTypeDef LCD_Write_String(int8_t * Message);
 HAL_StatusTypeDef LCD_Communication(uint8_t DATA, CMMON_State CMMON_STATE);
-HAL_StatusTypeDef LCD_Pin_Write(uint8_t DATA, RS_State PIN_RS_STATE, WR_State PIN_WR_STATE);
+HAL_StatusTypeDef LCD_Pin_Write(uint8_t DATA, uint8_t PIN_RS_STATE, uint8_t PIN_WR_STATE);
 
 /* DEFINE FUNCTION END -------------------------------------------------*/
 
